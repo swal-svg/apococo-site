@@ -123,7 +123,7 @@
 
   .m-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
   .m-card {
@@ -154,6 +154,10 @@
   .foot-meta {
     margin-top: 56px; font-size: 0.8rem; color: var(--fg-dim);
     display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+  }
+
+  @media (max-width: 1024px) {
+    .m-row { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 860px) {
@@ -229,6 +233,10 @@
         <div class="m-card">
           <img src="dining.jpg" loading="lazy" alt="ApoCoco bottle and Buko Bites on a restaurant table">
           <span class="m-tag">Dining &amp; hospitality</span>
+        </div>
+        <div class="m-card">
+          <img src="minibar.jpg" loading="lazy" alt="ApoCoco Highland bottle on a luxury hotel minibar counter">
+          <span class="m-tag">Hotel &amp; minibar</span>
         </div>
       </div>
     </div>
