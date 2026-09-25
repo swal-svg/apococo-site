@@ -73,6 +73,7 @@
   .hero h1 em { font-style: italic; color: var(--accent); }
   .hero p.lede { margin-top: 22px; font-size: 1.06rem; max-width: 42ch; }
   .hero-img { border-radius: 10px; overflow: hidden; }
+  .hero-img img { width: 100%; height: auto; }
 
   .cta-box {
     margin-top: 32px;
@@ -95,6 +96,24 @@
     font-family: 'Archivo', sans-serif; cursor: pointer; white-space: nowrap;
   }
   .form-note { margin-top: 12px; font-size: 0.78rem; color: var(--fg-dim); }
+
+  /* ---------- Story ---------- */
+  .story { padding: 110px 0 30px; border-top: 1px solid var(--hairline); }
+  .story-col { max-width: 620px; margin: 0 auto; }
+  .story-col p { font-size: 1.04rem; margin-bottom: 1.5em; }
+  p.story-lead {
+    font-family: 'Fraunces', serif;
+    font-size: 1.55rem;
+    line-height: 1.35;
+    color: var(--fg);
+    margin-bottom: 1.2em;
+  }
+  p.story-break {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    color: var(--fg);
+    margin: 2em 0;
+  }
 
   /* ---------- Moments ---------- */
   .moments { padding: 110px 0 40px; }
@@ -158,7 +177,6 @@
       <div>
         <div class="eyebrow"><span class="dash"></span> Mt. Apo, Philippines</div>
         <h1>Coming to the UAE <em>in 2027</em>.</h1>
-        <p class="lede">Pure coconut water and freeze-dried Buko Bites from the tallest mountain in the Philippines — frozen at source, bottled fresh, landing in the UAE next year.</p>
         <form class='cta-box' method='POST' name='notify'>
           <input type="hidden" name="form-name" value="notify">
           <p class="hp"><label>Leave empty <input name="bot-field"></label></p>
@@ -168,7 +186,27 @@
         <p class="form-note">Be first to know when ApoCoco lands — no spam, just the launch.</p>
       </div>
       <div class="hero-img">
-        <img src="hero.jpg" width="1122" height="1402" alt="ApoCoco VOLCANIC bottle and Buko Bites pouch with Mt. Apo in the background">
+        <img src="hero.jpg" width="1254" height="1254" alt="ApoCoco VOLCANIC bottle and Buko Bites pouch with Mt. Apo in the background">
+      </div>
+    </div>
+  </section>
+
+  <section class="story">
+    <div class="wrap">
+      <div class="story-col">
+        <p class="story-lead">At the western foothills of Mt. Apo, the highest mountain in the Philippines and a still-active volcano, rain meets ancient volcanic earth.</p>
+        <p>For generations, the mountain has shaped the land below. Rainwater moves through its volcanic slopes, carrying naturally occurring potassium, phosphorus and trace minerals into the fertile soils where our coconut palms grow.</p>
+        <p>Potassium, in particular, is one of the most important nutrients for coconut trees, supporting healthy growth and helping the palms develop abundant fruit and coconut water.</p>
+        <p>The porous volcanic earth provides something equally important: natural drainage. Excess rainfall can move through the soil, while moisture remains available to the roots.</p>
+        <p>Here, coconut palms grow alongside coffee, cacao and tropical fruit, sharing the extraordinary fertility of the foothills.</p>
+        <p class="story-break">This is where our coconuts begin.</p>
+        <p class="story-break">And this is where our story becomes traceable.</p>
+        <p>From the coconut grove to harvest, processing and every stage along the journey, we document the provenance of our coconuts through QR-enabled traceability and state-of-the-art immutable blockchain technology creating a permanent record of where they came from and how they became Apo Coco.</p>
+        <p>We harvest them for what nature has put inside: raw coconut water and tender coconut meat, with nothing added and nothing taken away.</p>
+        <p class="story-break">This is Kidapawan. A place known as the fruit basket of the Philippines, where the mountain, the soil, the rain and generations of farming have created a remarkable place for growing.</p>
+        <p>Perhaps this little corner of the Philippines was always meant to do exactly this.</p>
+        <p class="story-break">Now, we are bringing its story beyond the mountain.</p>
+        <p>Join us for early access as Apo Coco prepares to launch across the GCC, beginning with the UAE in 2027.</p>
       </div>
     </div>
   </section>
@@ -176,7 +214,7 @@
   <section class="moments">
     <div class="wrap">
       <div class="moments-head">
-        <h2>Same source. Every moment.</h2>
+        <h2>RAW · REAL · RARE</h2>
         <p>One small-batch supply chain, from a mountain in Mindanao to wherever you drink it.</p>
       </div>
       <div class="m-row">
