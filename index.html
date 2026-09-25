@@ -111,9 +111,8 @@
     position: relative;
     border-radius: 10px;
     overflow: hidden;
-    aspect-ratio: 16/11;
   }
-  .m-card img { width: 100%; height: 100%; object-fit: cover; }
+  .m-card img { width: 100%; height: auto; display: block; }
   .m-tag {
     position: absolute; left: 16px; bottom: 16px;
     background: rgba(252,250,246,0.92);
@@ -159,7 +158,7 @@
         <div class="eyebrow"><span class="dash"></span> Mt. Apo, Philippines</div>
         <h1>Coming to the UAE <em>in 2027</em>.</h1>
         <p class="lede">Pure coconut water and freeze-dried Buko Bites from the tallest mountain in the Philippines — frozen at source, bottled fresh, landing in the UAE next year.</p>
-        <form class="cta-box" name="notify" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <form class='cta-box' method='POST' name='notify'>
           <input type="hidden" name="form-name" value="notify">
           <p class="hp"><label>Leave empty <input name="bot-field"></label></p>
           <input type="email" name="email" placeholder="Your email" aria-label="Your email" required>
@@ -199,7 +198,7 @@
   <section class="foot-cta">
     <div class="wrap">
       <h2>Want early access when we launch?</h2>
-      <form class="cta-box" name="notify-footer" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <form class='cta-box' method='POST' name='notify-footer'>
         <input type="hidden" name="form-name" value="notify-footer">
         <p class="hp"><label>Leave empty <input name="bot-field"></label></p>
         <input type="email" name="email" placeholder="Your email" aria-label="Your email" required>
@@ -241,3 +240,4 @@ document.querySelectorAll('form[data-netlify]').forEach(function (form) {
 
 </body>
 </html>
+
