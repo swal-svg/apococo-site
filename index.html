@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ApoCoco — Coming to the UAE, 2027</title>
+<meta name="description" content="Pure coconut water and Buko Bites from Mt. Apo, Philippines — frozen at source, bottled fresh, landing in the UAE in 2027.">
+<meta property="og:title" content="ApoCoco — Coming to the UAE, 2027">
+<meta property="og:description" content="Pure coconut water and Buko Bites from Mt. Apo, Philippines. Landing in the UAE in 2027.">
+<meta property="og:image" content="https://apococo.com/images/hero.jpg">
+<meta property="og:url" content="https://apococo.com/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FCFAF6;
+    --paper-2: #F3EFE7;
+    --ink: #211E1A;
+    --ink-dim: #746C60;
+    --clay: #A6552E;
+    --forest: #3E5647;
+    --line: rgba(33,30,26,0.12);
+
+    --bg: var(--paper);
+    --bg-2: var(--paper-2);
+    --fg: var(--ink);
+    --fg-dim: var(--ink-dim);
+    --accent: var(--clay);
+    --hairline: var(--line);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: 'Archivo', sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, .serif { font-family: 'Fraunces', serif; font-weight: 400; line-height: 1.06; margin: 0; letter-spacing: -0.01em; }
+  p { line-height: 1.65; margin: 0; color: var(--fg-dim); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+  .hp { position: absolute; left: -9999px; }
+
+  /* ---------- Top mark ---------- */
+  .topmark {
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+    padding: 30px 0 0;
+  }
+  .topmark svg { width: 22px; height: 22px; }
+  .topmark span { font-family: 'Fraunces', serif; font-size: 1.05rem; letter-spacing: 0.01em; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 34px 0 10px; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .eyebrow {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--accent); font-size: 0.86rem; font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .eyebrow .dash { width: 24px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.3rem, 4.6vw, 3.6rem); max-width: 11ch; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p.lede { margin-top: 22px; font-size: 1.06rem; max-width: 42ch; }
+  .hero-img { border-radius: 10px; overflow: hidden; }
+
+  .cta-box {
+    margin-top: 32px;
+    max-width: 420px;
+    display: flex; gap: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    padding: 6px;
+  }
+  .cta-box input[type="email"] {
+    flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+    color: var(--fg); font-family: 'Archivo', sans-serif; font-size: 0.94rem;
+    padding: 12px 16px;
+  }
+  .cta-box input::placeholder { color: var(--fg-dim); }
+  .cta-box button {
+    background: var(--fg); color: var(--bg); border: none; border-radius: 999px;
+    padding: 12px 22px; font-weight: 700; font-size: 0.9rem;
+    font-family: 'Archivo', sans-serif; cursor: pointer; white-space: nowrap;
+  }
+  .form-note { margin-top: 12px; font-size: 0.78rem; color: var(--fg-dim); }
+
+  /* ---------- Moments ---------- */
+  .moments { padding: 110px 0 40px; }
+  .moments-head { text-align: center; margin-bottom: 50px; }
+  .moments-head h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); }
+  .moments-head p { margin-top: 14px; max-width: 44ch; margin-left: auto; margin-right: auto; }
+
+  .m-row {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 20px;
+  }
+  .m-card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 16/11;
+  }
+  .m-card img { width: 100%; height: 100%; object-fit: cover; }
+  .m-tag {
+    position: absolute; left: 16px; bottom: 16px;
+    background: rgba(252,250,246,0.92);
+    color: var(--ink);
+    font-size: 0.8rem; font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 999px;
+  }
+
+  /* ---------- Bottom CTA ---------- */
+  .foot-cta {
+    padding: 110px 0 calc(70px + env(safe-area-inset-bottom, 0px));
+    text-align: center;
+    border-top: 1px solid var(--hairline);
+    margin-top: 90px;
+  }
+  .foot-cta h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); max-width: 16ch; margin: 0 auto; }
+  .foot-cta .cta-box { margin-left: auto; margin-right: auto; }
+  .foot-meta {
+    margin-top: 56px; font-size: 0.8rem; color: var(--fg-dim);
+    display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: minmax(0, 1fr); }
+    .hero-img { order: -1; }
+    .m-row { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topmark">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M4 34L16 14L24 26L30 16L44 34" stroke="var(--fg)" stroke-width="2.4" stroke-linejoin="round"/>
+    </svg>
+    <span>ApoCoco</span>
+  </div>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="dash"></span> Mt. Apo, Philippines</div>
+        <h1>Coming to the UAE <em>in 2027</em>.</h1>
+        <p class="lede">Pure coconut water and freeze-dried Buko Bites from the tallest mountain in the Philippines — frozen at source, bottled fresh, landing in the UAE next year.</p>
+        <form class="cta-box" name="notify" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="notify">
+          <p class="hp"><label>Leave empty <input name="bot-field"></label></p>
+          <input type="email" name="email" placeholder="Your email" aria-label="Your email" required>
+          <button type="submit">Notify me</button>
+        </form>
+        <p class="form-note">Be first to know when ApoCoco lands — no spam, just the launch.</p>
+      </div>
+      <div class="hero-img">
+        <img src="images/hero.jpg" width="1225" height="1284" alt="ApoCoco VOLCANIC bottle and Buko Bites pouch with Mt. Apo in the background">
+      </div>
+    </div>
+  </section>
+
+  <section class="moments">
+    <div class="wrap">
+      <div class="moments-head">
+        <h2>Same source. Every moment.</h2>
+        <p>One small-batch supply chain, from a mountain in Mindanao to wherever you drink it.</p>
+      </div>
+      <div class="m-row">
+        <div class="m-card">
+          <img src="images/poolside.jpg" loading="lazy" alt="ApoCoco lineup on a beachside table">
+          <span class="m-tag">Poolside &amp; leisure</span>
+        </div>
+        <div class="m-card">
+          <img src="images/gym.jpg" loading="lazy" alt="ApoCoco bottle and shaker in a gym setting">
+          <span class="m-tag">Gym &amp; training</span>
+        </div>
+        <div class="m-card">
+          <img src="images/dining.jpg" loading="lazy" alt="ApoCoco bottle and Buko Bites on a restaurant table">
+          <span class="m-tag">Dining &amp; hospitality</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="foot-cta">
+    <div class="wrap">
+      <h2>Want early access when we launch?</h2>
+      <form class="cta-box" name="notify-footer" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="notify-footer">
+        <p class="hp"><label>Leave empty <input name="bot-field"></label></p>
+        <input type="email" name="email" placeholder="Your email" aria-label="Your email" required>
+        <button type="submit">Notify me</button>
+      </form>
+      <p class="form-note">Questions? <a href="mailto:apococo@apococo.com" style="text-decoration:underline;">apococo@apococo.com</a></p>
+      <div class="foot-meta">
+        <span>© 2026 ApoCoco</span>
+        <span>Kidapawan, Philippines · United Arab Emirates</span>
+      </div>
+    </div>
+  </section>
+
+<script>
+// Sends sign-ups to Netlify Forms without leaving the page.
+document.querySelectorAll('form[data-netlify]').forEach(function (form) {
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = form.querySelector('button');
+    var email = form.querySelector('input[type="email"]');
+    var label = btn.textContent;
+    btn.textContent = 'Saving…';
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString()
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      btn.textContent = 'Added ✓';
+      email.value = '';
+    }).catch(function () {
+      btn.textContent = 'Try again';
+    }).finally(function () {
+      setTimeout(function () { btn.textContent = label; }, 2500);
+    });
+  });
+});
+</script>
+
+</body>
+</html>
