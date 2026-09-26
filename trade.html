@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>APOCOCO — Trade</title>
+<!-- PUBLIC PREVIEW — the numbers in MODEL below are PLACEHOLDERS (shape only, not real pricing). The real Bracket Model v1 ladder must only ever live server-side (private endpoint / Worker). Swap this file's verdict call to that endpoint before linking this page from the homepage. -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#FCFAF6; --paper-2:#F3EFE7; --ink:#211E1A; --ink-dim:#746C60;
+    --clay:#A6552E; --line:rgba(33,30,26,0.12);
+    --green:#3E5647; --amber:#B97E3F; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Archivo',sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,.serif { font-family:'Fraunces',serif; font-weight:400; line-height:1.1; margin:0; letter-spacing:-0.01em; }
+  p { line-height:1.62; margin:0; color:var(--ink-dim); font-size:0.93rem; }
+  .wrap { max-width:520px; margin:0 auto; padding:0 22px; }
+  .head { display:flex; justify-content:space-between; align-items:center; padding:20px 0 0; }
+  .brand { font-family:'Fraunces',serif; font-size:1rem; }
+  .tag { font-size:0.66rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--clay); border:1px solid var(--clay); border-radius:999px; padding:5px 12px; }
+  .intro { padding:40px 0 6px; }
+  .intro .eyebrow { color:var(--clay); font-size:0.78rem; font-weight:600; margin-bottom:12px; }
+  .intro h1 { font-size:1.9rem; max-width:15ch; }
+  .intro h1 em { font-style:italic; color:var(--clay); }
+  .intro p { margin-top:14px; }
+  .motto { font-family:'Fraunces',serif; font-style:italic; font-size:1.02rem; color:var(--ink);
+    margin-top:20px; }
+  .venues { display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+  .chip { border:1px solid var(--line); border-radius:999px; padding:8px 14px;
+    font-size:0.78rem; font-weight:600; color:var(--ink-dim); background:var(--paper); }
+  .chip.on { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .card { margin-top:30px; border:1px solid var(--line); border-radius:14px; background:var(--paper-2); padding:24px 20px; }
+  .card h2 { font-size:1.3rem; }
+  .card .sub { font-size:0.82rem; margin-top:5px; }
+  .field { margin-top:18px; }
+  .field label { display:block; font-size:0.7rem; font-weight:700; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--ink-dim); margin-bottom:7px; }
+  .field label .opt { font-weight:400; text-transform:none; letter-spacing:0; color:var(--ink-dim); }
+  .field select, .field input {
+    width:100%; padding:13px 14px; border:1px solid var(--line); border-radius:10px;
+    background:var(--paper); font-family:'Archivo'; font-size:1rem; color:var(--ink); outline:none;
+  }
+  .field input.ghost { border-style:dashed; color:var(--ink-dim); }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+  /* product picker */
+  .pick { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+  .prow { display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+    border:1px solid var(--line); border-radius:12px; padding:12px 14px; background:var(--paper);
+    cursor:pointer; font-family:'Archivo'; }
+  .prow .circ { width:19px; height:19px; border-radius:50%; border:1.5px solid rgba(33,30,26,0.35);
+    flex:none; display:flex; align-items:center; justify-content:center; }
+  .prow .circ::after { content:""; width:9px; height:9px; border-radius:50%; background:transparent; }
+  .prow.on { border-color:var(--ink); }
+  .prow.on .circ { border-color:var(--ink); }
+  .prow.on .circ::after { background:var(--ink); }
+  .prow .pname { font-weight:600; font-size:0.92rem; color:var(--ink); }
+  .prow .pname em { font-style:normal; font-weight:400; color:var(--ink-dim); font-size:0.82rem; }
+
+  /* per-product card */
+  .pcard { margin-top:14px; border:1px solid var(--line); border-radius:12px; background:var(--paper);
+    padding:16px 16px 18px; }
+  .pcard-head { display:flex; align-items:center; gap:9px; }
+  .pcard-head .dot { width:11px; height:11px; border-radius:50%; background:rgba(33,30,26,0.18); flex:none; }
+  .pcard-head .dot.g { background:var(--green); }
+  .pcard-head .dot.a { background:var(--amber); }
+  .pcard-head strong { font-family:'Fraunces',serif; font-weight:500; font-size:1rem; }
+  .pcard-head .psize { font-size:0.76rem; color:var(--ink-dim); }
+  .pcard-head .pstatus { margin-left:auto; font-size:0.72rem; font-weight:700; letter-spacing:0.04em;
+    text-transform:uppercase; color:var(--ink-dim); }
+  .pcard-head .pstatus.g { color:var(--green); }
+  .pcard-head .pstatus.a { color:var(--amber); }
+  .shelf { margin-top:14px; border-top:1px dashed var(--line); padding-top:12px; display:none; }
+  .shelf.show { display:block; }
+  .shelf-t { font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--ink-dim); margin-bottom:6px; }
+  .srow { display:flex; justify-content:space-between; padding:4px 0; font-size:0.85rem; }
+  .srow .sk { color:var(--ink-dim); }
+  .srow .sv { font-family:'Fraunces',serif; }
+  .shelf .fine { font-size:0.68rem; color:var(--ink-dim); margin-top:6px; line-height:1.5; }
+  .yourline { margin-top:10px; font-size:0.8rem; color:var(--ink); }
+  .yourline b { font-family:'Fraunces',serif; font-weight:500; }
+  .fixer { margin-top:12px; border-radius:10px; padding:14px; display:none;
+    background:rgba(185,126,63,0.09); border:1px solid rgba(185,126,63,0.4); }
+  .fixer.show { display:block; }
+  .fixer .f-title { font-family:'Fraunces',serif; font-size:0.95rem; color:var(--amber); margin-bottom:4px; }
+  .fixer .f-opt { margin-top:10px; }
+  .fixer button { width:100%; border:1px solid var(--ink); background:var(--paper); border-radius:999px;
+    padding:10px; font-weight:600; font-family:'Archivo'; font-size:0.85rem; color:var(--ink); cursor:pointer; }
+  .fixer .f-note { font-size:0.74rem; color:var(--ink-dim); margin-top:5px; line-height:1.55; }
+
+  .verdict { margin-top:22px; border-radius:12px; padding:18px 18px; display:none; }
+  .verdict.show { display:block; }
+  .verdict .v-title { font-family:'Fraunces',serif; font-size:1.15rem; display:flex; gap:10px; align-items:center; }
+  .verdict .v-title .dot { width:11px; height:11px; border-radius:50%; flex:none; }
+  .verdict p { margin-top:8px; font-size:0.84rem; }
+  .verdict.green { background:rgba(62,86,71,0.08); border:1px solid rgba(62,86,71,0.35); }
+  .verdict.green .v-title { color:var(--green); }
+  .verdict.green .dot { background:var(--green); }
+  .verdict.amber { background:rgba(185,126,63,0.09); border:1px solid rgba(185,126,63,0.4); }
+  .verdict.amber .v-title { color:var(--amber); }
+  .verdict.amber .dot { background:var(--amber); }
+  .emailbox { margin-top:16px; display:none; }
+  .emailbox.show { display:block; }
+  .emailbox .lbl { font-size:0.8rem; font-weight:600; color:var(--ink); margin-bottom:8px; }
+  .emailbox .fine { font-size:0.7rem; margin-top:8px; color:var(--ink-dim); }
+  .cta { display:none; margin-top:14px; }
+  .cta.show { display:block; }
+  .cta button { width:100%; background:var(--ink); color:var(--paper); border:none; border-radius:999px;
+    padding:14px; font-weight:700; font-size:0.92rem; font-family:'Archivo'; cursor:pointer; }
+  .privnote { margin-top:14px; font-size:0.7rem; color:var(--ink-dim); text-align:center; }
+  .human { text-align:center; margin:26px 0 10px; font-size:0.78rem; color:var(--ink-dim); }
+  .human a { color:var(--ink); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+  .foot { text-align:center; padding:20px 0 40px; font-size:0.68rem; color:var(--ink-dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <span class="brand">APOCOCO</span>
+    <span class="tag">Trade</span>
+  </div>
+
+  <div class="intro">
+    <div class="eyebrow">Wholesale — UAE 2027</div>
+    <h1>Small batches. <em>Selected</em> partners.</h1>
+    <p>APOCOCO is produced in small batches at the foothills of Mt. Apo — and supplied to a limited number of partners in each city.</p>
+    <p style="margin-top:10px;">We work exclusively with businesses: fitness clubs and gyms, yacht charters, hotels, restaurants, health clubs, yoga studios, and selected retailers who serve coconut water the way it was made — pure, chilled, and without compromise.</p>
+    <p style="margin-top:10px;">Tell us about your venue below. This page will tell you honestly, and immediately, where you stand.</p>
+    <p class="motto">We would rather tell you in thirty seconds than waste your time in a meeting.</p>
+    <div class="venues">
+      <span class="chip on" data-m="fitness">Fitness club / Gym</span>
+      <span class="chip" data-m="hotel">Yacht charter</span>
+      <span class="chip" data-m="hotel">Hotel</span>
+      <span class="chip" data-m="restaurant">Restaurant</span>
+      <span class="chip" data-m="health">Health club</span>
+      <span class="chip" data-m="yoga">Yoga studio</span>
+      <span class="chip" data-m="retail">Selected retail</span>
+      <span class="chip" id="otherChip" data-m="other">Other…</span>
+    </div>
+    <div class="field" id="otherField" style="display:none; margin-top:14px;">
+      <label>Your venue type</label>
+      <input type="text" placeholder="e.g. Beach club, spa, corporate catering…">
+    </div>
+    <script>
+      var currentVenue = 'fitness';
+      var marginTouched = false;
+      document.querySelectorAll('.venues .chip').forEach(function(chip){
+        chip.addEventListener('click', function(){
+          document.querySelectorAll('.venues .chip').forEach(function(c){ c.classList.remove('on'); });
+          chip.classList.add('on');
+          currentVenue = chip.dataset.m || 'other';
+          var of = document.getElementById('otherField');
+          if (chip.id === 'otherChip') {
+            of.style.display = 'block';
+            of.querySelector('input').focus();
+          } else {
+            of.style.display = 'none';
+          }
+          applyMarginPreset();
+        });
+      });
+    </script>
+  </div>
+
+  <div class="card">
+    <h2 class="serif">Your trade profile</h2>
+    <p class="sub">Pick your products, estimate your numbers. No email required to see where you stand. Minimum order 48 units/month per product.</p>
+
+    <div class="field" style="margin-top:22px;">
+      <label>Which products would you sell?</label>
+      <div class="pick" id="pick">
+        <button type="button" class="prow" data-p="highland"><span class="circ"></span><span class="pname">HIGHLAND&nbsp; <em>375 ml glass</em></span></button>
+        <button type="button" class="prow" data-p="reserva"><span class="circ"></span><span class="pname">RESERVA&nbsp; <em>375 ml glass</em></span></button>
+        <button type="button" class="prow" data-p="volcanic"><span class="circ"></span><span class="pname">VOLCANIC&nbsp; <em>500 ml rPET</em></span></button>
+        <button type="button" class="prow" data-p="buko"><span class="circ"></span><span class="pname">BUKO BITES&nbsp; <em>50 g pouch</em></span></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Your target gross margin % <span class="opt">— optional, shows your own earning estimate</span></label>
+      <select id="margin">
+        <option value="">Select — optional</option>
+        <option value="25">25%</option>
+        <option value="30">30%</option>
+        <option value="35">35%</option>
+        <option value="40">40%</option>
+        <option value="45">45%</option>
+        <option value="50" selected>50%</option>
+        <option value="55">55%</option>
+        <option value="60">60%</option>
+        <option value="65">65%</option>
+        <option value="70">70%</option>
+      </select>
+    </div>
+
+    <div id="basket"></div>
+
+    <div class="verdict" id="verdict">
+      <div class="v-title"><span class="dot"></span><span id="vtext"></span></div>
+      <p id="vsub"></p>
+      <div class="emailbox" id="emailbox">
+        <div class="lbl" id="emailLbl"></div>
+        <input id="email" type="email" placeholder="you@yourvenue.com">
+        <div class="fine">Your numbers are attached to your request so we come to the call already prepared.</div>
+      </div>
+      <div class="cta" id="cta"><button id="ctaBtn">Request indicative offer</button></div>
+    </div>
+
+    <p class="privnote">Your wholesale price is never shown on this page. The verdict uses it — only you see your side.</p>
+  </div>
+
+  <p class="human">Prefer to talk? <a href="#">apococo@apococo.com</a></p>
+  <div class="foot">© 2026 APOCOCO · Kidapawan, Philippines · United Arab Emirates</div>
+
+</div>
+<script>
+// CONFIDENTIAL — REAL BRACKET MODEL v1 (26 Sep 2026). DO NOT PUBLISH THIS FILE.
+// The wholesale price ladder below must NEVER reach a public page's source code.
+// In production the verdict call must happen server-side (e.g. Cloudflare Worker).
+var MODEL = {
+  highland: { tiers: [48,250,500,1000],
+    price: [20,19.5,19,18],
+    floor: [34,34,33,32],
+    cap:   [46,46,45,44] },
+  reserva:  { tiers: [48,250,500,1000],
+    price: [20,19.5,19,18],
+    floor: [34,34,33,32],
+    cap:   [46,46,45,44] },
+  volcanic: { tiers: [48,250,500,1000],
+    price: [12.5,12,11.5,11],
+    floor: [22,21,20,19],
+    cap:   [32,32,31,30] },
+  buko:     { tiers: [48,250,500,1000],
+    price: [9,8.6,8.2,7.8],
+    floor: [16,15,14.5,14],
+    cap:   [24,24,23,22] }
+};
+var VAT = 0.05;
+var MOQ = 48;
+function tierIdx(p, v){ var m = MODEL[p], i = 0;
+  m.tiers.forEach(function(t, k){ if (v >= t) i = k; }); return i; }
+function recRetail(p, v){ return MODEL[p].floor[tierIdx(p,v)] + 2; }
+var META = {
+  highland: { name:'HIGHLAND', size:'375 ml glass' },
+  reserva:  { name:'RESERVA',  size:'375 ml glass' },
+  volcanic: { name:'VOLCANIC', size:'500 ml rPET' },
+  buko:     { name:'BUKO BITES', size:'50 g pouch' }
+};
+var ORDER = ['highland','reserva','volcanic','buko'];
+
+var $ = function(id){ return document.getElementById(id); };
+var selected = [];
+var marginOverride = {};   // per-product accepted margin (amber fixer path)
+
+function esc(s){ return s; }
+
+function cardHTML(p){
+  var m = META[p];
+  return '<div class="pcard" data-p="'+p+'">'
+    + '<div class="pcard-head"><span class="dot" id="dot-'+p+'"></span>'
+    + '<strong>'+m.name+'</strong><span class="psize">'+m.size+'</span>'
+    + '<span class="pstatus" id="st-'+p+'"></span></div>'
+    + '<div class="row2">'
+    +   '<div class="field"><label>Expected monthly volume</label>'
+    +   '<input id="vol-'+p+'" type="number" value="" placeholder="e.g. 800" min="48" step="50"></div>'
+    +   '<div class="field"><label>Estimated sales price (AED)</label>'
+    +   '<input id="ret-'+p+'" class="ghost" type="number" value="" placeholder="auto"></div>'
+    + '</div>'
+    + '<div class="shelf" id="shelf-'+p+'">'
+    +   '<div class="srow"><span class="sk">Consumer price incl. 5% VAT</span><span class="sv" id="sv-'+p+'">—</span></div>'
+    +   '<div class="yourline" id="yl-'+p+'"></div>'
+    + '</div><div class="fixer" id="fix-'+p+'"></div></div>';
+}
+
+document.querySelectorAll('.prow').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var p = btn.dataset.p;
+    var i = selected.indexOf(p);
+    if (i >= 0) { selected.splice(i,1); btn.classList.remove('on'); }
+    else { selected.push(p); btn.classList.add('on'); }
+    renderBasket();
+    applyMarginPreset();
+  });
+});
+
+function renderBasket(){
+  var html = '';
+  ORDER.forEach(function(p){ if (selected.indexOf(p) >= 0) html += cardHTML(p); });
+  $('basket').innerHTML = html;
+  ORDER.forEach(function(p){
+    if (selected.indexOf(p) < 0) return;
+    $('vol-'+p).addEventListener('input', function(){
+      var v = parseInt($('vol-'+p).value) || 0;
+      if (v > 0 && !$('ret-'+p).value) $('ret-'+p).value = recRetail(p, v);
+      evaluate();
+    });
+    $('ret-'+p).addEventListener('input', evaluate);
+  });
+}
+['input','change'].forEach(function(ev){ $('margin').addEventListener(ev, evaluate); });
+$('margin').addEventListener('change', function(){ marginTouched = true; });
+
+// One-tap fixer buttons (event delegation — basket cards re-render)
+$('basket').addEventListener('click', function(e){
+  var b = e.target.closest('button[data-act]'); if (!b) return;
+  var p = b.dataset.p;
+  var v = parseInt($('vol-'+p).value) || 0;
+  if (b.dataset.act === 'price') {
+    $('ret-'+p).value = recRetail(p, v);
+    evaluate();
+  } else if (b.dataset.act === 'margin') {
+    var retail = parseFloat($('ret-'+p).value) || 0;
+    marginOverride[p] = Math.round((retail - MODEL[p].price[tierIdx(p,v)]) / retail * 100);
+    evaluate();
+  }
+});
+
+// Industry gross-margin presets (product-level, corrected 27 Sep 2026):
+// hotel/yacht 70% (minibar item margin 75-80% at 300-400% markup; F&B beverage 65-75%)
+// restaurant 65% (beverage SERVICE 65-75% — made-to-order class, labor included)
+// fitness 30% (SEALED-BOTTLE RESALE: gyms 15-25% typical, 30-40% premium/differentiated;
+//   the 50-60% juice/smoothie figures are made-to-order labor models — wrong reference class)
+// health club 35% / yoga 30% (resale, premium venue band)
+// selected retail 30% (grocery 16-28% typical, premium/specialty upper band)
+// other 50% (fallback). Glass in the basket (HIGHLAND/RESERVA) -> hotel preset always.
+// Anti-dumping guard is the corridor floor, NOT this dropdown: a 25% grocery is honest
+// resale; an 8% Amazon play can never pass the floor regardless of what is selected here.
+var MARGIN_PRESET = { fitness:30, hotel:70, restaurant:65, health:35, yoga:30, retail:30, other:50 };
+function applyMarginPreset(){
+  if (marginTouched) return;
+  var hasGlass = selected.indexOf('highland') >= 0 || selected.indexOf('reserva') >= 0;
+  var preset = hasGlass ? MARGIN_PRESET.hotel : (MARGIN_PRESET[currentVenue] || 60);
+  $('margin').value = String(preset);
+  evaluate();
+}
+
+function fmt(n){ return n.toFixed(2); }
+
+function evaluate(){
+  var margin = parseFloat($('margin').value) || 0;
+  var anyEval = false, allGreen = true, fits = 0, evald = 0;
+  ORDER.forEach(function(p){
+    if (selected.indexOf(p) < 0) return;
+    var v = parseInt($('vol-'+p).value) || 0;
+    var retail = parseFloat($('ret-'+p).value) || 0;
+    var dot = $('dot-'+p), st = $('st-'+p), shelf = $('shelf-'+p);
+    if (v <= 0 || retail <= 0) {
+      dot.className = 'dot'; st.className = 'pstatus'; st.textContent = '';
+      shelf.className = 'shelf'; return;
+    }
+    anyEval = true; evald++;
+    var i = tierIdx(p, v);
+    var price = MODEL[p].price[i];
+    // green if price inside corridor — OR the buyer has accepted their actual
+    // margin on this item (>=40% floor = lean but honest, never dumping)
+    var mActual = Math.round((retail - price) / retail * 100);
+    var green = (retail >= MODEL[p].floor[i] && retail <= MODEL[p].cap[i])
+      || (marginOverride[p] != null && marginOverride[p] >= 40 && retail >= price / 0.6 && retail <= MODEL[p].cap[i]);
+    if (green) fits++; else allGreen = false;
+    dot.className = 'dot ' + (green ? 'g' : 'a');
+    st.className = 'pstatus ' + (green ? 'g' : 'a');
+    st.textContent = green ? 'Fits' : 'Adjust';
+    shelf.className = 'shelf show';
+    var inc = retail * (1 + VAT);
+    $('sv-'+p).textContent = 'AED ' + fmt(inc);
+    var effMargin = (marginOverride[p] != null) ? marginOverride[p] : margin;
+    if (effMargin > 0) {
+      var unit = retail * effMargin / 100;
+      var tag = (marginOverride[p] != null)
+        ? 'At your accepted ' + effMargin + '% on this item'
+        : 'At your stated ' + effMargin + '% gross margin';
+      $('yl-'+p).innerHTML = tag + ': <b>≈ '
+        + fmt(unit) + ' AED / unit</b> · <b>' + Math.round(unit*v).toLocaleString()
+        + ' AED / month</b> <span style="color:var(--ink-dim)">(your numbers only)</span>';
+    } else {
+      $('yl-'+p).textContent = '';
+    }
+    // per-product fixer
+    var fix = $('fix-'+p);
+    if (!green) {
+      var h = '<div class="f-title">Just outside the framework — easily fixed.</div>';
+      var rec = recRetail(p, v);
+      h += '<div class="f-opt"><button type="button" data-act="price" data-p="'+p+'">Use our suggested price — AED '+fmt(rec)+'</button>'
+        + '<div class="f-note">Consumer pays AED '+fmt(rec*(1+VAT))+' incl. VAT. One tap — this product turns green.</div></div>';
+      if (retail < MODEL[p].floor[i] && mActual >= 40) {
+        h += '<div class="f-opt"><button type="button" data-act="margin" data-p="'+p+'">Keep AED '+fmt(retail)+' — accept '+mActual+'% on this item</button>'
+          + '<div class="f-note">You still earn ≈ '+fmt(retail-price)+' AED per unit. Lean margins from the right venue are fine by us — this item counts as green.</div></div>';
+      }
+      if (retail > MODEL[p].cap[i]) {
+        h += '<div class="f-note" style="margin-top:10px">This price sits above the framework for this product. A lower price protects the brand — and your sell-through — for everyone.</div>';
+      }
+      fix.innerHTML = h;
+      fix.className = 'fixer show';
+    } else {
+      fix.innerHTML = '';
+      fix.className = 'fixer';
+    }
+  });
+  var verdict = $('verdict');
+  if (!anyEval) { verdict.className = 'verdict'; return; }
+  verdict.className = 'verdict show ' + (allGreen ? 'green' : 'amber');
+  if (allGreen) {
+    if (evald === 1) $('vtext').textContent = 'This product works at your volume.';
+    else $('vtext').textContent = 'All ' + evald + ' products work at your volumes.';
+    $('vsub').textContent = 'Your pricing sits within the APOCOCO framework across your selection. Leave your work email and we will send your indicative offer — your numbers are already attached.';
+    $('emailLbl').textContent = 'Where should we send your indicative offer?';
+    $('ctaBtn').textContent = 'Request indicative offer';
+  } else {
+    $('vtext').textContent = fits + ' of ' + evald + ' products fit — the last one is one tap from fitting.';
+    $('vsub').textContent = 'Most venues fit on most products — that is the design. For the remaining one, tap the suggestion under it and it turns green, or send us the basket as it is and our trade desk will shape it with you personally. Nothing on this page is a rejection.';
+    $('emailLbl').textContent = 'Prefer a human? Send this basket to our trade desk:';
+    $('ctaBtn').textContent = 'Send my basket to the trade desk';
+  }
+  $('emailbox').className = 'emailbox show';
+  $('cta').className = 'cta show';
+}
+</script>
+</body>
+</html>
