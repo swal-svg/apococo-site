@@ -86,11 +86,14 @@
   .fixer { margin-top:12px; border-radius:10px; padding:14px; display:none;
     background:rgba(185,126,63,0.09); border:1px solid rgba(185,126,63,0.4); }
   .fixer.show { display:block; }
+  .fixer.note { background:rgba(0,0,0,0.035); border:1px dashed var(--line); }
   .fixer .f-title { font-family:'Fraunces',serif; font-size:0.95rem; color:var(--amber); margin-bottom:4px; }
   .fixer .f-opt { margin-top:10px; }
   .fixer button { width:100%; border:1px solid var(--ink); background:var(--paper); border-radius:999px;
     padding:10px; font-weight:600; font-family:'Archivo'; font-size:0.85rem; color:var(--ink); cursor:pointer; }
   .fixer .f-note { font-size:0.74rem; color:var(--ink-dim); margin-top:5px; line-height:1.55; }
+  .moq { display:none; font-size:0.72rem; color:#b3402e; margin-top:5px; font-weight:600; line-height:1.5; }
+  .moq.show { display:block; }
 
   .verdict { margin-top:22px; border-radius:12px; padding:18px 18px; display:none; }
   .verdict.show { display:block; }
@@ -267,7 +270,8 @@ function cardHTML(p){
     + '<span class="pstatus" id="st-'+p+'"></span></div>'
     + '<div class="row2">'
     +   '<div class="field"><label>Expected monthly volume</label>'
-    +   '<input id="vol-'+p+'" type="number" value="" placeholder="e.g. 800" min="48" step="50"></div>'
+    +   '<input id="vol-'+p+'" type="number" value="" placeholder="e.g. 800" min="48" step="50">'
+    +   '<div class="moq" id="moq-'+p+'"></div></div>'
     +   '<div class="field"><label>Estimated sales price (AED)</label>'
     +   '<input id="ret-'+p+'" class="ghost" type="number" value="" placeholder="auto"></div>'
     + '</div>'
@@ -353,14 +357,26 @@ function evaluate(){
       dot.className = 'dot'; st.className = 'pstatus'; st.textContent = '';
       shelf.className = 'shelf'; return;
     }
+    // MOQ guard: below 48 the order can't ship — flag in red, calculate at 48
+    var moq = $('moq-'+p);
+    if (v < MOQ) {
+      moq.textContent = 'Below the box minimum — orders start at 48 units (8 boxes × 6). We calculate at 48.';
+      moq.className = 'moq show';
+      v = MOQ;
+    } else {
+      moq.className = 'moq';
+    }
     anyEval = true; evald++;
     var i = tierIdx(p, v);
     var price = MODEL[p].price[i];
-    // green if price inside corridor — OR the buyer has accepted their actual
-    // margin on this item (>=40% floor = lean but honest, never dumping)
+    // Only the DOWNSIDE flags. Below the corridor floor = dumping risk -> amber.
+    // Above the cap = the venue's own business (a 7-star hotel may charge what
+    // it likes) -> green with a soft advisory note, never a fail.
     var mActual = Math.round((retail - price) / retail * 100);
-    var green = (retail >= MODEL[p].floor[i] && retail <= MODEL[p].cap[i])
-      || (marginOverride[p] != null && marginOverride[p] >= 40 && retail >= price / 0.6 && retail <= MODEL[p].cap[i]);
+    var belowFloor = retail < MODEL[p].floor[i];
+    var aboveCap = retail > MODEL[p].cap[i];
+    var green = !belowFloor
+      || (marginOverride[p] != null && marginOverride[p] >= 40 && retail >= price / 0.6);
     if (green) fits++; else allGreen = false;
     dot.className = 'dot ' + (green ? 'g' : 'a');
     st.className = 'pstatus ' + (green ? 'g' : 'a');
@@ -387,15 +403,15 @@ function evaluate(){
       var rec = recRetail(p, v);
       h += '<div class="f-opt"><button type="button" data-act="price" data-p="'+p+'">Use our suggested price — AED '+fmt(rec)+'</button>'
         + '<div class="f-note">Consumer pays AED '+fmt(rec*(1+VAT))+' incl. VAT. One tap — this product turns green.</div></div>';
-      if (retail < MODEL[p].floor[i] && mActual >= 40) {
+      if (mActual >= 40) {
         h += '<div class="f-opt"><button type="button" data-act="margin" data-p="'+p+'">Keep AED '+fmt(retail)+' — accept '+mActual+'% on this item</button>'
           + '<div class="f-note">You still earn ≈ '+fmt(retail-price)+' AED per unit. Lean margins from the right venue are fine by us — this item counts as green.</div></div>';
       }
-      if (retail > MODEL[p].cap[i]) {
-        h += '<div class="f-note" style="margin-top:10px">This price sits above the framework for this product. A lower price protects the brand — and your sell-through — for everyone.</div>';
-      }
       fix.innerHTML = h;
       fix.className = 'fixer show';
+    } else if (aboveCap) {
+      fix.innerHTML = '<div class="f-note">Above the typical UAE shelf price for this product — and that is your call, not ours. If your guests pay it, everyone wins. This is a note, not a flag.</div>';
+      fix.className = 'fixer show note';
     } else {
       fix.innerHTML = '';
       fix.className = 'fixer';
@@ -411,8 +427,14 @@ function evaluate(){
     $('emailLbl').textContent = 'Where should we send your indicative offer?';
     $('ctaBtn').textContent = 'Request indicative offer';
   } else {
-    $('vtext').textContent = fits + ' of ' + evald + ' products fit — the last one is one tap from fitting.';
-    $('vsub').textContent = 'Most venues fit on most products — that is the design. For the remaining one, tap the suggestion under it and it turns green, or send us the basket as it is and our trade desk will shape it with you personally. Nothing on this page is a rejection.';
+    var misses = evald - fits;
+    if (misses === 1) {
+      $('vtext').textContent = fits + ' of ' + evald + ' products fit — the last one is one tap from fitting.';
+      $('vsub').textContent = 'Most venues fit on most products — that is the design. For the remaining one, tap the suggestion under it and it turns green, or send us the basket as it is and our trade desk will shape it with you personally. Nothing on this page is a rejection.';
+    } else {
+      $('vtext').textContent = fits + ' of ' + evald + ' products fit — each one is one tap from fitting.';
+      $('vsub').textContent = 'This page is a starting point, not a verdict. Every miss has a one-tap fix under it — take the suggested price, or keep your price and accept the margin shown. Or send us the basket as it is and our trade desk will shape it with you personally. Nothing here is a rejection.';
+    }
     $('emailLbl').textContent = 'Prefer a human? Send this basket to our trade desk:';
     $('ctaBtn').textContent = 'Send my basket to the trade desk';
   }
