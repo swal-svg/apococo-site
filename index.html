@@ -47,13 +47,23 @@
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
   .hp { position: absolute; left: -9999px; }
 
-  /* ---------- Top mark ---------- */
-  .topmark {
-    display: flex; justify-content: center; align-items: center; gap: 10px;
-    padding: 30px 0 0;
+
+  /* ---------- Site header ---------- */
+  .site-head {
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 1080px; margin: 0 auto; padding: 26px 28px 0;
   }
-  .topmark svg { width: 22px; height: 22px; }
-  .topmark span { font-family: 'Fraunces', serif; font-size: 1.05rem; letter-spacing: 0.01em; }
+  .site-head .brand { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', serif; font-size: 1.05rem; letter-spacing: 0.01em; }
+  .site-head .brand svg { width: 22px; height: 22px; }
+  .site-nav { display: flex; gap: 26px; font-size: 0.9rem; font-weight: 500; }
+  .site-nav a { color: var(--fg-dim); transition: color .15s; }
+  .site-nav a:hover { color: var(--fg); }
+  .site-nav a.active { color: var(--fg); text-decoration: underline; text-underline-offset: 6px; text-decoration-color: var(--accent); }
+  @media (max-width: 600px) {
+    .site-head { padding: 18px 16px 0; gap: 10px; }
+    .site-nav { gap: 13px; font-size: 0.78rem; }
+    .site-head .brand { font-size: 0.98rem; }
+  }
 
   /* ---------- Hero ---------- */
   .hero { padding: 34px 0 10px; }
@@ -169,16 +179,19 @@
 </head>
 <body>
 
-  <div class="topmark">
-    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M4 34L16 14L24 26L30 16L44 34" stroke="var(--fg)" stroke-width="2.4" stroke-linejoin="round"/>
-    </svg>
-    <span>APOCOCO</span>
-  </div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 34L16 14L24 26L30 16L44 34" stroke="var(--fg)" stroke-width="2.4" stroke-linejoin="round"/></svg><span>APOCOCO</span></a>
+    <nav class="site-nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="story.html">Our Story</a>
+      <a href="products.html">Products</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
 
   <section class="hero">
     <div class="wrap hero-grid">
-      <div>
+      <div id="notify">
         <div class="eyebrow"><span class="dash"></span> Mt. Apo, Philippines</div>
         <h1>Coming to the UAE <em>in 2027</em>.</h1>
         <form class='cta-box' method='POST' name='notify'>
@@ -211,6 +224,7 @@
         <p>Perhaps this little corner of the Philippines was always meant to do exactly this.</p>
         <p class="story-break">Now, we are bringing its story beyond the mountain.</p>
         <p>Join us for early access as APOCOCO prepares to launch across the GCC, beginning with the UAE in 2027.</p>
+        <p style="text-align:center; margin-top: 2.5em;"><a href="story.html" style="font-weight: 700; text-decoration: underline; text-underline-offset: 4px;">Read the full story →</a></p>
       </div>
     </div>
   </section>

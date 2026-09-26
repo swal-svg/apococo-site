@@ -94,6 +94,7 @@
   .fixer .f-note { font-size:0.74rem; color:var(--ink-dim); margin-top:5px; line-height:1.55; }
   .moq { display:none; font-size:0.72rem; color:#b3402e; margin-top:5px; font-weight:600; line-height:1.5; }
   .moq.show { display:block; }
+  select.flag-red { border-color:#b3402e !important; background:rgba(179,64,46,0.06); }
 
   .verdict { margin-top:22px; border-radius:12px; padding:18px 18px; display:none; }
   .verdict.show { display:block; }
@@ -199,6 +200,7 @@
         <option value="65">65%</option>
         <option value="70">70%</option>
       </select>
+      <div class="moq" id="marginFlag"></div>
     </div>
 
     <div id="basket"></div>
@@ -347,7 +349,7 @@ function fmt(n){ return n.toFixed(2); }
 
 function evaluate(){
   var margin = parseFloat($('margin').value) || 0;
-  var anyEval = false, allGreen = true, fits = 0, evald = 0;
+  var anyEval = false, allGreen = true, fits = 0, evald = 0, belowOwnTarget = false;
   ORDER.forEach(function(p){
     if (selected.indexOf(p) < 0) return;
     var v = parseInt($('vol-'+p).value) || 0;
@@ -377,7 +379,7 @@ function evaluate(){
     var aboveCap = retail > MODEL[p].cap[i];
     var green = !belowFloor
       || (marginOverride[p] != null && marginOverride[p] >= 40 && retail >= price / 0.6);
-    if (green) fits++; else allGreen = false;
+    if (green) fits++; else { allGreen = false; if (mActual < margin) belowOwnTarget = true; }
     dot.className = 'dot ' + (green ? 'g' : 'a');
     st.className = 'pstatus ' + (green ? 'g' : 'a');
     st.textContent = green ? 'Fits' : 'Adjust';
@@ -417,6 +419,16 @@ function evaluate(){
       fix.className = 'fixer';
     }
   });
+  // red-alert the buyer's own target margin when an amber item undercuts it
+  var mf = $('marginFlag');
+  if (belowOwnTarget && margin > 0) {
+    mf.textContent = 'At your price on the amber-flagged item, your actual margin falls below your own stated ' + margin + '% target — see the card below.';
+    mf.className = 'moq show';
+    $('margin').classList.add('flag-red');
+  } else {
+    mf.className = 'moq';
+    $('margin').classList.remove('flag-red');
+  }
   var verdict = $('verdict');
   if (!anyEval) { verdict.className = 'verdict'; return; }
   verdict.className = 'verdict show ' + (allGreen ? 'green' : 'amber');
@@ -428,7 +440,10 @@ function evaluate(){
     $('ctaBtn').textContent = 'Request indicative offer';
   } else {
     var misses = evald - fits;
-    if (misses === 1) {
+    if (evald === 1) {
+      $('vtext').textContent = 'This product is one tap from fitting.';
+      $('vsub').textContent = 'Nothing here is a rejection — this page is a starting point, not a verdict. There is a one-tap fix under the card: take the suggested price, or keep your price and accept the margin shown. Or send us the basket as it is and our trade desk will shape it with you personally.';
+    } else if (misses === 1) {
       $('vtext').textContent = fits + ' of ' + evald + ' products fit — the last one is one tap from fitting.';
       $('vsub').textContent = 'Most venues fit on most products — that is the design. For the remaining one, tap the suggestion under it and it turns green, or send us the basket as it is and our trade desk will shape it with you personally. Nothing on this page is a rejection.';
     } else {
