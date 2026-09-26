@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>APOCOCO — Coming to the UAE, 2027</title>
-<meta name="description" content="Pure coconut water and Buko Bites from Mt. Apo, Philippines — frozen at source, bottled fresh, landing in the UAE in 2027.">
-<meta property="og:title" content="APOCOCO — Coming to the UAE, 2027">
-<meta property="og:description" content="Pure coconut water and Buko Bites from Mt. Apo, Philippines. Landing in the UAE in 2027.">
+<title>Our Story — APOCOCO</title>
+<meta name="description" content="The story of APOCOCO — raw coconut water and Buko Bites from the volcanic foothills of Mt. Apo, Philippines.">
+<meta property="og:title" content="Our Story — APOCOCO">
+<meta property="og:description" content="The story of APOCOCO — raw coconut water and Buko Bites from the volcanic foothills of Mt. Apo, Philippines.">
 <meta property="og:image" content="https://apococo.com/hero.jpg">
-<meta property="og:url" content="https://apococo.com/">
+<meta property="og:url" content="https://apococo.com/story.html">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
   :root {
     --paper: #FCFAF6;
     --paper-2: #F3EFE7;
@@ -47,23 +48,6 @@
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
   .hp { position: absolute; left: -9999px; }
 
-
-  /* ---------- Site header ---------- */
-  .site-head {
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 1080px; margin: 0 auto; padding: 26px 28px 0;
-  }
-  .site-head .brand { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', serif; font-size: 1.05rem; letter-spacing: 0.01em; }
-  .site-head .brand svg { width: 22px; height: 22px; }
-  .site-nav { display: flex; gap: 26px; font-size: 0.9rem; font-weight: 500; }
-  .site-nav a { color: var(--fg-dim); transition: color .15s; }
-  .site-nav a:hover { color: var(--fg); }
-  .site-nav a.active { color: var(--fg); text-decoration: underline; text-underline-offset: 6px; text-decoration-color: var(--accent); }
-  @media (max-width: 600px) {
-    .site-head { padding: 18px 16px 0; gap: 10px; }
-    .site-nav { gap: 13px; font-size: 0.78rem; }
-    .site-head .brand { font-size: 0.98rem; }
-  }
 
   /* ---------- Hero ---------- */
   .hero { padding: 34px 0 10px; }
@@ -175,6 +159,51 @@
     .hero-img { max-width: 340px; justify-self: center; }
     .m-row { grid-template-columns: minmax(0, 1fr); }
   }
+
+  /* ---------- Site header ---------- */
+  .site-head {
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 1080px; margin: 0 auto; padding: 26px 28px 0;
+  }
+  .site-head .brand { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', serif; font-size: 1.05rem; letter-spacing: 0.01em; }
+  .site-head .brand svg { width: 22px; height: 22px; }
+  .site-nav { display: flex; gap: 26px; font-size: 0.9rem; font-weight: 500; }
+  .site-nav a { color: var(--fg-dim); transition: color .15s; }
+  .site-nav a:hover { color: var(--fg); }
+  .site-nav a.active { color: var(--fg); text-decoration: underline; text-underline-offset: 6px; text-decoration-color: var(--accent); }
+  @media (max-width: 600px) {
+    .site-head { padding: 18px 16px 0; gap: 10px; }
+    .site-nav { gap: 13px; font-size: 0.78rem; }
+    .site-head .brand { font-size: 0.98rem; }
+  }
+
+
+  /* ---------- Subpage shared ---------- */
+  .page-hero { padding: 84px 0 60px; text-align: center; }
+  .page-hero h1 { font-size: clamp(2.2rem, 4.6vw, 3.4rem); max-width: 18ch; margin: 0 auto; }
+  .page-hero .eyebrow { justify-content: center; }
+  .page-hero p { margin: 20px auto 0; max-width: 52ch; font-size: 1.06rem; }
+  .sub-foot {
+    padding: 70px 0 calc(60px + env(safe-area-inset-bottom, 0px));
+    text-align: center; border-top: 1px solid var(--hairline); margin-top: 90px;
+    font-size: 0.8rem; color: var(--fg-dim);
+    display: flex; flex-direction: column; gap: 8px; align-items: center;
+  }
+
+  .story-full { padding: 0 0 40px; }
+  .story-full .story-col p { font-size: 1.06rem; }
+  .story-img { max-width: 720px; margin: 56px auto; border-radius: 10px; overflow: hidden; }
+  .story-img img { width: 100%; height: auto; }
+  .fact-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    max-width: 860px; margin: 60px auto; padding: 0 28px;
+  }
+  .fact { border: 1px solid var(--hairline); border-radius: 10px; padding: 26px 22px; background: var(--bg-2); }
+  .fact .num { font-family: 'Fraunces', serif; font-size: 2rem; color: var(--accent); }
+  .fact .lbl { margin-top: 8px; font-size: 0.88rem; font-weight: 600; }
+  .fact p { margin-top: 6px; font-size: 0.86rem; line-height: 1.5; }
+  @media (max-width: 720px) { .fact-row { grid-template-columns: minmax(0,1fr); } }
+
 </style>
 </head>
 <body>
@@ -182,33 +211,22 @@
   <header class="site-head">
     <a class="brand" href="index.html"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 34L16 14L24 26L30 16L44 34" stroke="var(--fg)" stroke-width="2.4" stroke-linejoin="round"/></svg><span>APOCOCO</span></a>
     <nav class="site-nav">
-      <a href="index.html" class="active">Home</a>
-      <a href="story.html">Our Story</a>
+      <a href="index.html">Home</a>
+      <a href="story.html" class="active">Our Story</a>
       <a href="products.html">Products</a>
       <a href="contact.html">Contact</a>
     </nav>
   </header>
 
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div id="notify">
-        <div class="eyebrow"><span class="dash"></span> Mt. Apo, Philippines</div>
-        <h1>Coming to the UAE <em>in 2027</em>.</h1>
-        <form class='cta-box' method='POST' name='notify'>
-          <input type="hidden" name="form-name" value="notify">
-          <p class="hp"><label>Leave empty <input name="bot-field"></label></p>
-          <input type="email" name="email" placeholder="Your email" aria-label="Your email" required>
-          <button type="submit">Notify me</button>
-        </form>
-        <p class="form-note">Be first to know when APOCOCO lands — no spam, just the launch.</p>
-      </div>
-      <div class="hero-img">
-        <img src="hero.jpg" width="1254" height="1254" alt="APOCOCO VOLCANIC bottle and Buko Bites pouch with Mt. Apo in the background">
-      </div>
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="eyebrow"><span class="dash"></span> Our Story</div>
+      <h1>From a volcano to <em style="font-style:italic; color:var(--accent);">your table</em>.</h1>
+      <p>The full story of where APOCOCO comes from — the mountain, the soil, and the people of Kidapawan.</p>
     </div>
   </section>
 
-  <section class="story">
+  <section class="story story-full">
     <div class="wrap">
       <div class="story-col">
         <p class="story-lead">At the western foothills of Mt. Apo, the highest mountain in the Philippines and a still-active volcano, rain meets ancient volcanic earth.</p>
@@ -216,90 +234,54 @@
         <p>Potassium, in particular, is one of the most important nutrients for coconut trees, supporting healthy growth and helping the palms develop abundant fruit and coconut water.</p>
         <p>The porous volcanic earth provides something equally important: natural drainage. Excess rainfall can move through the soil, while moisture remains available to the roots.</p>
         <p>Here, coconut palms grow alongside coffee, cacao and tropical fruit, sharing the extraordinary fertility of the foothills.</p>
+      </div>
+
+      <div class="fact-row">
+        <div class="fact">
+          <div class="num">2,954 m</div>
+          <div class="lbl">Mt. Apo</div>
+          <p>The highest peak in the Philippines, and a still-active volcano.</p>
+        </div>
+        <div class="fact">
+          <div class="num">100%</div>
+          <div class="lbl">Traceable</div>
+          <p>QR-enabled provenance and immutable blockchain records, grove to bottle.</p>
+        </div>
+        <div class="fact">
+          <div class="num">0</div>
+          <div class="lbl">Additions</div>
+          <p>Nothing added, nothing taken away. Raw coconut water and tender coconut meat.</p>
+        </div>
+      </div>
+
+      <div class="story-col">
         <p class="story-break">This is where our coconuts begin.</p>
         <p class="story-break">And this is where our story becomes traceable.</p>
         <p>From the coconut grove to harvest, processing and every stage along the journey, we document the provenance of our coconuts through QR-enabled traceability and state-of-the-art immutable blockchain technology creating a permanent record of where they came from and how they became APOCOCO.</p>
+        <div class="story-img">
+          <img src="hero.jpg" loading="lazy" alt="APOCOCO VOLCANIC coconut water and Buko Bites from Mt. Apo">
+        </div>
         <p>We harvest them for what nature has put inside: raw coconut water and tender coconut meat, with nothing added and nothing taken away.</p>
         <p class="story-break">This is Kidapawan. A place known as the fruit basket of the Philippines, where the mountain, the soil, the rain and generations of farming have created a remarkable place for growing.</p>
         <p>Perhaps this little corner of the Philippines was always meant to do exactly this.</p>
         <p class="story-break">Now, we are bringing its story beyond the mountain.</p>
         <p>Join us for early access as APOCOCO prepares to launch across the GCC, beginning with the UAE in 2027.</p>
-        <p style="text-align:center; margin-top: 2.5em;"><a href="story.html" style="font-weight: 700; text-decoration: underline; text-underline-offset: 4px;">Read the full story →</a></p>
       </div>
     </div>
   </section>
 
-  <section class="moments">
+  <section class="foot-cta" style="margin-top: 40px;">
     <div class="wrap">
-      <div class="moments-head">
-        <h2>RAW · REAL · RARE</h2>
-        <p>One small-batch supply chain, from a mountain in Mindanao to wherever you drink it.</p>
-      </div>
-      <div class="m-row">
-        <div class="m-card">
-          <img src="poolside.jpg" loading="lazy" alt="APOCOCO lineup on a beachside table">
-          <span class="m-tag">Poolside &amp; leisure</span>
-        </div>
-        <div class="m-card">
-          <img src="gym.jpg" loading="lazy" alt="APOCOCO bottle and shaker in a gym setting">
-          <span class="m-tag">Gym &amp; training</span>
-        </div>
-        <div class="m-card">
-          <img src="dining.jpg" loading="lazy" alt="APOCOCO bottle and Buko Bites on a restaurant table">
-          <span class="m-tag">Dining &amp; hospitality</span>
-        </div>
-        <div class="m-card">
-          <img src="minibar.jpg" loading="lazy" alt="APOCOCO Highland bottle on a luxury hotel minibar counter">
-          <span class="m-tag">Hotel &amp; minibar</span>
-        </div>
-      </div>
+      <h2>See what the mountain makes.</h2>
+      <p style="margin-top: 16px;"><a href="products.html" style="font-weight: 700; text-decoration: underline; text-underline-offset: 4px;">Explore the products →</a></p>
     </div>
   </section>
 
-  <section class="foot-cta">
-    <div class="wrap">
-      <h2>Want early access when we launch?</h2>
-      <form class='cta-box' method='POST' name='notify-footer'>
-        <input type="hidden" name="form-name" value="notify-footer">
-        <p class="hp"><label>Leave empty <input name="bot-field"></label></p>
-        <input type="email" name="email" placeholder="Your email" aria-label="Your email" required>
-        <button type="submit">Notify me</button>
-      </form>
-      <p class="form-note">Questions? <a href="mailto:apococo@apococo.com" style="text-decoration:underline;">apococo@apococo.com</a></p>
-      <div class="foot-meta">
-        <span>© 2026 APOCOCO</span>
-        <span>Kidapawan, Philippines · United Arab Emirates</span>
-      </div>
-    </div>
-  </section>
-
-<script>
-// Sends sign-ups to Netlify Forms without leaving the page.
-document.querySelectorAll('form[data-netlify]').forEach(function (form) {
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var btn = form.querySelector('button');
-    var email = form.querySelector('input[type="email"]');
-    var label = btn.textContent;
-    btn.textContent = 'Saving…';
-    fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(new FormData(form)).toString()
-    }).then(function (r) {
-      if (!r.ok) throw new Error(r.status);
-      btn.textContent = 'Added ✓';
-      email.value = '';
-    }).catch(function () {
-      btn.textContent = 'Try again';
-    }).finally(function () {
-      setTimeout(function () { btn.textContent = label; }, 2500);
-    });
-  });
-});
-</script>
+  <footer class="sub-foot">
+    <span>© 2026 APOCOCO</span>
+    <span>Kidapawan, Philippines · United Arab Emirates</span>
+    <span><a href="index.html" style="text-decoration:underline; text-underline-offset:3px;">apococo.com</a></span>
+  </footer>
 
 </body>
 </html>
-
-

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VOLCANIC — APOCOCO</title>
+<meta name="description" content="APOCOCO VOLCANIC — Raw coconut water — the core of the APOCOCO range. A 500 ml clear rPET bottle with a white ribbed screw cap and minimal premium direct-print branding.">
+<meta property="og:title" content="VOLCANIC — APOCOCO">
+<meta property="og:description" content="APOCOCO VOLCANIC — Raw coconut water — the core of the APOCOCO range. A 500 ml clear rPET bottle with a white ribbed screw cap and minimal premium direct-print branding.">
+<meta property="og:image" content="https://apococo.com/hero.jpg">
+<meta property="og:url" content="https://apococo.com/products/volcanic.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --paper: #FCFAF6;
+    --paper-2: #F3EFE7;
+    --ink: #211E1A;
+    --ink-dim: #746C60;
+    --clay: #A6552E;
+    --forest: #3E5647;
+    --line: rgba(33,30,26,0.12);
+
+    --bg: var(--paper);
+    --bg-2: var(--paper-2);
+    --fg: var(--ink);
+    --fg-dim: var(--ink-dim);
+    --accent: var(--clay);
+    --hairline: var(--line);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: 'Archivo', sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, .serif { font-family: 'Fraunces', serif; font-weight: 400; line-height: 1.06; margin: 0; letter-spacing: -0.01em; }
+  p { line-height: 1.65; margin: 0; color: var(--fg-dim); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+  .hp { position: absolute; left: -9999px; }
+
+
+  /* ---------- Site header ---------- */
+  .site-head {
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 1080px; margin: 0 auto; padding: 26px 28px 0;
+  }
+  .site-head .brand { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', serif; font-size: 1.05rem; letter-spacing: 0.01em; }
+  .site-head .brand svg { width: 22px; height: 22px; }
+  .site-nav { display: flex; gap: 26px; font-size: 0.9rem; font-weight: 500; }
+  .site-nav a { color: var(--fg-dim); transition: color .15s; }
+  .site-nav a:hover { color: var(--fg); }
+  .site-nav a.active { color: var(--fg); text-decoration: underline; text-underline-offset: 6px; text-decoration-color: var(--accent); }
+  @media (max-width: 600px) {
+    .site-head { padding: 18px 16px 0; gap: 10px; }
+    .site-nav { gap: 13px; font-size: 0.78rem; }
+    .site-head .brand { font-size: 0.98rem; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 34px 0 10px; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .eyebrow {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--accent); font-size: 0.86rem; font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .eyebrow .dash { width: 24px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.3rem, 4.6vw, 3.6rem); max-width: 11ch; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p.lede { margin-top: 22px; font-size: 1.06rem; max-width: 42ch; }
+  .hero-img { border-radius: 10px; overflow: hidden; max-width: 430px; width: 100%; justify-self: end; }
+  .hero-img img { width: 100%; height: auto; }
+
+  .cta-box {
+    margin-top: 32px;
+    max-width: 420px;
+    display: flex; gap: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    padding: 6px;
+  }
+  .cta-box input[type="email"] {
+    flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+    color: var(--fg); font-family: 'Archivo', sans-serif; font-size: 0.94rem;
+    padding: 12px 16px;
+  }
+  .cta-box input::placeholder { color: var(--fg-dim); }
+  .cta-box button {
+    background: var(--fg); color: var(--bg); border: none; border-radius: 999px;
+    padding: 12px 22px; font-weight: 700; font-size: 0.9rem;
+    font-family: 'Archivo', sans-serif; cursor: pointer; white-space: nowrap;
+  }
+  .form-note { margin-top: 12px; font-size: 0.78rem; color: var(--fg-dim); }
+
+  /* ---------- Story ---------- */
+  .story { padding: 110px 0 30px; border-top: 1px solid var(--hairline); }
+  .story-col { max-width: 620px; margin: 0 auto; }
+  .story-col p { font-size: 1.04rem; margin-bottom: 1.5em; }
+  p.story-lead {
+    font-family: 'Fraunces', serif;
+    font-size: 1.55rem;
+    line-height: 1.35;
+    color: var(--fg);
+    margin-bottom: 1.2em;
+  }
+  p.story-break {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    color: var(--fg);
+    margin: 2em 0;
+  }
+
+  /* ---------- Moments ---------- */
+  .moments { padding: 110px 0 40px; }
+  .moments-head { text-align: center; margin-bottom: 50px; }
+  .moments-head h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); }
+  .moments-head p { margin-top: 14px; max-width: 44ch; margin-left: auto; margin-right: auto; }
+
+  .m-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .m-card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 4/5;
+  }
+  .m-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .m-tag {
+    position: absolute; left: 16px; bottom: 16px;
+    background: rgba(252,250,246,0.92);
+    color: var(--ink);
+    font-size: 0.8rem; font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 999px;
+  }
+
+  /* ---------- Bottom CTA ---------- */
+  .foot-cta {
+    padding: 110px 0 calc(70px + env(safe-area-inset-bottom, 0px));
+    text-align: center;
+    border-top: 1px solid var(--hairline);
+    margin-top: 90px;
+  }
+  .foot-cta h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); max-width: 16ch; margin: 0 auto; }
+  .foot-cta .cta-box { margin-left: auto; margin-right: auto; }
+  .foot-meta {
+    margin-top: 56px; font-size: 0.8rem; color: var(--fg-dim);
+    display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+  }
+
+  @media (max-width: 1024px) {
+    .m-row { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+    .hero-img { max-width: 340px; justify-self: center; }
+    .m-row { grid-template-columns: minmax(0, 1fr); }
+  }
+
+
+  /* ---------- Subpage shared ---------- */
+  .page-hero { padding: 84px 0 60px; text-align: center; }
+  .page-hero h1 { font-size: clamp(2.2rem, 4.6vw, 3.4rem); max-width: 18ch; margin: 0 auto; }
+  .page-hero .eyebrow { justify-content: center; }
+  .page-hero p { margin: 20px auto 0; max-width: 52ch; font-size: 1.06rem; }
+  .sub-foot {
+    padding: 70px 0 calc(60px + env(safe-area-inset-bottom, 0px));
+    text-align: center; border-top: 1px solid var(--hairline); margin-top: 90px;
+    font-size: 0.8rem; color: var(--fg-dim);
+    display: flex; flex-direction: column; gap: 8px; align-items: center;
+  }
+
+
+  .pd { padding: 60px 0 30px; }
+  .pd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .pd-img { border-radius: 10px; overflow: hidden; }
+  .pd-img img { width: 100%; height: auto; }
+  .pd h1 { font-size: clamp(2.2rem, 4.4vw, 3.3rem); }
+  .pd .size {
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 1.25rem;
+    color: var(--accent); margin-top: 6px;
+  }
+  .pd p { margin-top: 18px; max-width: 46ch; font-size: 1.04rem; }
+  .spec-list { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .spec-list span {
+    border: 1px solid var(--hairline); border-radius: 999px;
+    padding: 8px 16px; font-size: 0.84rem; font-weight: 600; color: var(--fg-dim);
+  }
+  .claims { margin-top: 30px; border-top: 1px solid var(--hairline); }
+  .claim { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--hairline); }
+  .claim .ck { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-dim); }
+  .claim .cv { font-family: 'Fraunces', serif; font-size: 1.1rem; text-align: right; }
+  .back { display: inline-block; margin-top: 30px; font-size: 0.9rem; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+  .back:hover { color: var(--accent); }
+  @media (max-width: 860px) {
+    .pd-grid { grid-template-columns: minmax(0,1fr); gap: 36px; }
+    .pd .pd-img { max-width: 400px; }
+  }
+
+</style>
+</head>
+<body>
+
+  <header class="site-head">
+    <a class="brand" href="../index.html"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 34L16 14L24 26L30 16L44 34" stroke="var(--fg)" stroke-width="2.4" stroke-linejoin="round"/></svg><span>APOCOCO</span></a>
+    <nav class="site-nav">
+      <a href="../index.html">Home</a>
+      <a href="../story.html">Our Story</a>
+      <a href="../products.html" class="active">Products</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="pd">
+    <div class="wrap">
+      <div class="pd-grid">
+        <div class="pd-img">
+          <img src="../volcanic.jpg" alt="APOCOCO VOLCANIC 500 ml clear rPET bottle of raw coconut water with white ribbed screw cap">
+        </div>
+        <div>
+          <div class="eyebrow"><span class="dash"></span> Everyday rPET bottle</div>
+          <h1>VOLCANIC</h1>
+          <div class="size">500 ML</div>
+          <p>Raw coconut water — the core of the APOCOCO range. A 500 ml clear rPET bottle with a white ribbed screw cap and minimal premium direct-print branding. Everyday hydration from volcanic earth.</p>
+          
+          <div class="spec-list"><span>500 ml</span><span>Raw coconut water</span><span>Clear rPET bottle</span><span>White ribbed screw cap</span></div>
+      <div class="claims">        <div class="claim"><span class="ck">Origin</span><span class="cv">Mt. Apo, Philippines</span></div>        <div class="claim"><span class="ck">Bottle</span><span class="cv">rPET, direct-print</span></div>        <div class="claim"><span class="ck">Launch</span><span class="cv">UAE 2027</span></div>
+      </div>
+          <a class="back" href="../products.html">← All products</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="foot-cta" style="margin-top: 50px;">
+    <div class="wrap">
+      <h2>Want early access when we launch?</h2>
+      <p style="margin-top: 16px;"><a href="../index.html#notify" style="font-weight: 700; text-decoration: underline; text-underline-offset: 4px;">Join the notify list →</a></p>
+    </div>
+  </section>
+
+  <footer class="sub-foot">
+    <span>© 2026 APOCOCO</span>
+    <span>Kidapawan, Philippines · United Arab Emirates</span>
+    <span><a href="../index.html" style="text-decoration:underline; text-underline-offset:3px;">apococo.com</a></span>
+  </footer>
+
+</body>
+</html>
