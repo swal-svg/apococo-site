@@ -98,9 +98,9 @@
   .fixer button { width:100%; border:1px solid var(--ink); background:var(--paper); border-radius:999px;
     padding:10px; font-weight:600; font-family:'Archivo'; font-size:0.85rem; color:var(--ink); cursor:pointer; }
   .fixer .f-note { font-size:0.74rem; color:var(--ink-dim); margin-top:5px; line-height:1.55; }
-  .moq { display:none; font-size:0.72rem; color:#b3402e; margin-top:5px; font-weight:600; line-height:1.5; }
+  .moq { display:none; font-size:0.72rem; color:var(--amber); margin-top:5px; font-weight:600; line-height:1.5; }
   .moq.show { display:block; }
-  select.flag-red { border-color:#b3402e !important; background:rgba(179,64,46,0.06); }
+  select.flag-amber { border-color:var(--amber) !important; background:rgba(185,126,63,0.08); }
   .tierhint { display:none; font-size:0.7rem; color:var(--ink-dim); margin-top:4px; line-height:1.45; }
   .tierhint.show { display:block; }
 
@@ -438,6 +438,7 @@ function evaluate(){
     } else {
       th.className = 'tierhint';
     }
+    var vReal = v; // order size BEFORE the tier reassign — used only for the month math
     v = vTier;
     anyEval = true; evald++;
     var i = tierIdx(p, v);
@@ -465,10 +466,10 @@ function evaluate(){
     if (effMargin > 0) {
       var unit = retailRaw * effMargin / 100;
       var tag = (marginOverride[p] != null)
-        ? 'At your stated ' + effMargin + '% on this item'
+        ? 'At your ≈' + effMargin + '% margin on this item'
         : 'At your stated ' + effMargin + '% gross margin';
       var line = tag + ': <b>≈ '
-        + fmt(unit) + ' AED / unit</b> · <b>' + Math.round(unit*v).toLocaleString()
+        + fmt(unit) + ' AED / unit</b> · <b>' + Math.round(unit*vReal).toLocaleString()
         + ' AED / month</b> <span style="color:var(--ink-dim)">(your numbers only)</span>';
       // second line: when their price earns MORE than their stated target, say so.
       // Banded to a 5% range — an exact figure would let our cost be back-solved
@@ -523,10 +524,10 @@ function evaluate(){
   if (belowOwnTarget && margin > 0) {
     mf.textContent = 'At your price on the flagged item, your actual margin falls below your own stated ' + margin + '% target — see the card below.';
     mf.className = 'moq show';
-    $('margin').classList.add('flag-red');
+    $('margin').classList.add('flag-amber');
   } else {
     mf.className = 'moq';
-    $('margin').classList.remove('flag-red');
+    $('margin').classList.remove('flag-amber');
   }
   var verdict = $('verdict');
   if (!anyEval) { verdict.className = 'verdict'; return; }
