@@ -66,12 +66,14 @@
   .pcard-head { display:flex; align-items:center; gap:9px; }
   .pcard-head .dot { width:11px; height:11px; border-radius:50%; background:rgba(33,30,26,0.18); flex:none; }
   .pcard-head .dot.g { background:var(--green); }
+  .pcard-head .dot.y { background:#c9a227; }
   .pcard-head .dot.a { background:var(--amber); }
   .pcard-head strong { font-family:'Fraunces',serif; font-weight:500; font-size:1rem; }
   .pcard-head .psize { font-size:0.76rem; color:var(--ink-dim); }
   .pcard-head .pstatus { margin-left:auto; font-size:0.72rem; font-weight:700; letter-spacing:0.04em;
     text-transform:uppercase; color:var(--ink-dim); }
   .pcard-head .pstatus.g { color:var(--green); }
+  .pcard-head .pstatus.y { color:#8a6d1c; }
   .pcard-head .pstatus.a { color:var(--amber); }
   .shelf { margin-top:14px; border-top:1px dashed var(--line); padding-top:12px; display:none; }
   .shelf.show { display:block; }
@@ -87,6 +89,8 @@
     background:rgba(185,126,63,0.09); border:1px solid rgba(185,126,63,0.4); }
   .fixer.show { display:block; }
   .fixer.note { background:rgba(0,0,0,0.035); border:1px dashed var(--line); }
+  .fixer.review { background:rgba(201,162,39,0.08); border:1px solid rgba(201,162,39,0.35); }
+  .fixer.review .f-title { color:#8a6d1c; }
   .fixer .f-title { font-family:'Fraunces',serif; font-size:0.95rem; color:var(--amber); margin-bottom:4px; }
   .fixer .f-opt { margin-top:10px; }
   .fixer button { width:100%; border:1px solid var(--ink); background:var(--paper); border-radius:999px;
@@ -95,6 +99,8 @@
   .moq { display:none; font-size:0.72rem; color:#b3402e; margin-top:5px; font-weight:600; line-height:1.5; }
   .moq.show { display:block; }
   select.flag-red { border-color:#b3402e !important; background:rgba(179,64,46,0.06); }
+  .tierhint { display:none; font-size:0.7rem; color:var(--ink-dim); margin-top:4px; line-height:1.45; }
+  .tierhint.show { display:block; }
 
   .verdict { margin-top:22px; border-radius:12px; padding:18px 18px; display:none; }
   .verdict.show { display:block; }
@@ -107,6 +113,9 @@
   .verdict.amber { background:rgba(185,126,63,0.09); border:1px solid rgba(185,126,63,0.4); }
   .verdict.amber .v-title { color:var(--amber); }
   .verdict.amber .dot { background:var(--amber); }
+  .verdict.review { background:rgba(201,162,39,0.08); border:1px solid rgba(201,162,39,0.4); }
+  .verdict.review .v-title { color:#8a6d1c; }
+  .verdict.review .dot { background:#c9a227; }
   .emailbox { margin-top:16px; display:none; }
   .emailbox.show { display:block; }
   .emailbox .lbl { font-size:0.8rem; font-weight:600; color:var(--ink); margin-bottom:8px; }
@@ -247,9 +256,27 @@ var MODEL = {
 };
 var VAT = 0.05;
 var MOQ = 48;
-function tierIdx(p, v){ var m = MODEL[p], i = 0;
-  m.tiers.forEach(function(t, k){ if (v >= t) i = k; }); return i; }
-function recRetail(p, v){ return MODEL[p].floor[tierIdx(p,v)] + 2; }
+// Three-zone verdict around the protected floor: green >= floor+GREEN_PAD
+// (comfortable fit), yellow >= floor-AMBER_DROP (near the range — a deliberate
+// uncertainty band so the exact boundary can't be binary-searched), amber below.
+// The accept-margin path (actual >= 40%) stays internal — never disclosed in UI.
+var ZONE_GREEN_PAD = 2, ZONE_AMBER_DROP = 3;
+// ONE canonical tier rule — NEAREST published tier — used by every commercial
+// path (evaluation, suggested price, auto-fill, accept path) so they can never
+// disagree on which tier a volume sits in. (Earlier a threshold-based tierIdx
+// served the auto-fill path and could pick a different tier than the
+// nearest-tier snap used in evaluation — flagged in the GPT review, fixed here.)
+function tierIdx(p, v){
+  var t = MODEL[p].tiers, best = 0, bd = Math.abs(v - t[0]);
+  for (var k = 1; k < t.length; k++) {
+    var d = Math.abs(v - t[k]);
+    if (d < bd) { best = k; bd = d; }
+  }
+  return best;
+}
+// Suggested price = (floor + comfort pad) rounded UP to the next 5 AED.
+// Always lands green; never prints the exact floor (anti boundary-search).
+function recRetail(p, v){ return Math.ceil((MODEL[p].floor[tierIdx(p,v)] + ZONE_GREEN_PAD) / 5) * 5; }
 var META = {
   highland: { name:'HIGHLAND', size:'375 ml glass' },
   reserva:  { name:'RESERVA',  size:'375 ml glass' },
@@ -273,7 +300,8 @@ function cardHTML(p){
     + '<div class="row2">'
     +   '<div class="field"><label>Expected monthly volume</label>'
     +   '<input id="vol-'+p+'" type="number" value="" placeholder="e.g. 800" min="48" step="50">'
-    +   '<div class="moq" id="moq-'+p+'"></div></div>'
+    +   '<div class="moq" id="moq-'+p+'"></div>'
+    +   '<div class="tierhint" id="th-'+p+'"></div></div>'
     +   '<div class="field"><label>Estimated sales price (AED)</label>'
     +   '<input id="ret-'+p+'" class="ghost" type="number" value="" placeholder="auto"></div>'
     + '</div>'
@@ -321,7 +349,9 @@ $('basket').addEventListener('click', function(e){
     evaluate();
   } else if (b.dataset.act === 'margin') {
     var retail = parseFloat($('ret-'+p).value) || 0;
-    marginOverride[p] = Math.round((retail - MODEL[p].price[tierIdx(p,v)]) / retail * 100);
+    // store the 5% BUCKET, not the integer margin — the yourline later prints
+    // "your accepted X%", and an exact/integer figure back-solves wholesale
+    marginOverride[p] = Math.round((retail - MODEL[p].price[tierIdx(p,v)]) / retail * 100 / 5) * 5;
     evaluate();
   }
 });
@@ -350,15 +380,23 @@ function fmt(n){ return n.toFixed(2); }
 function evaluate(){
   var margin = parseFloat($('margin').value) || 0;
   var anyEval = false, allGreen = true, fits = 0, evald = 0, belowOwnTarget = false;
+  var amberN = 0, yellowN = 0;
   ORDER.forEach(function(p){
     if (selected.indexOf(p) < 0) return;
     var v = parseInt($('vol-'+p).value) || 0;
     var retail = parseFloat($('ret-'+p).value) || 0;
+    var retailRaw = retail; // their exact number — used for display only
     var dot = $('dot-'+p), st = $('st-'+p), shelf = $('shelf-'+p);
     if (v <= 0 || retail <= 0) {
       dot.className = 'dot'; st.className = 'pstatus'; st.textContent = '';
       shelf.className = 'shelf'; return;
     }
+    // SNAP THE INPUT, NOT THE LABEL: every verdict comparison runs on the price
+    // rounded to the nearest 2 AED. A bisection attacker only ever sees flips at
+    // 2-AED steps — the floor resolves to ±1, wholesale to ~±1.2. (Claude's core
+    // point: coarsening displayed text costs an attacker nothing; coarsening the
+    // comparison itself is load-bearing.)
+    retail = Math.round(retail / 2) * 2;
     // MOQ guard: below 48 the order can't ship — flag in red, calculate at 48
     var moq = $('moq-'+p);
     if (v < MOQ) {
@@ -368,49 +406,91 @@ function evaluate(){
     } else {
       moq.className = 'moq';
     }
+    // Snap evaluation volume to the nearest PUBLISHED tier — kills the continuous
+    // volume dimension: only tier midpoints can ever flip a verdict, so the whole
+    // floor(V) curve has at most 8 probeable points, ever.
+    var tiers = MODEL[p].tiers, vTier = tiers[0], th = $('th-'+p);
+    for (var ti = 0; ti < tiers.length; ti++) {
+      if (Math.abs(v - tiers[ti]) < Math.abs(v - vTier)) vTier = tiers[ti];
+    }
+    if (vTier !== v) {
+      th.textContent = 'Calculated at your nearest published volume tier: ' + vTier + '/mo.';
+      th.className = 'tierhint show';
+    } else {
+      th.className = 'tierhint';
+    }
+    v = vTier;
     anyEval = true; evald++;
     var i = tierIdx(p, v);
     var price = MODEL[p].price[i];
-    // Only the DOWNSIDE flags. Below the corridor floor = dumping risk -> amber.
+    // Only the DOWNSIDE zones. Below the recommended range = positioning risk.
     // Above the cap = the venue's own business (a 7-star hotel may charge what
     // it likes) -> green with a soft advisory note, never a fail.
-    var mActual = Math.round((retail - price) / retail * 100);
-    var belowFloor = retail < MODEL[p].floor[i];
+    // Their margin at THEIR exact typed price (display & their-own-target
+    // alerts). Zone math still uses the snapped retail — displays stay banded.
+    var mRaw = (retailRaw - price) / retailRaw * 100;
     var aboveCap = retail > MODEL[p].cap[i];
-    var green = !belowFloor
-      || (marginOverride[p] != null && marginOverride[p] >= 40 && retail >= price / 0.6);
-    if (green) fits++; else { allGreen = false; if (mActual < margin) belowOwnTarget = true; }
-    dot.className = 'dot ' + (green ? 'g' : 'a');
-    st.className = 'pstatus ' + (green ? 'g' : 'a');
-    st.textContent = green ? 'Fits' : 'Adjust';
+    var fl = MODEL[p].floor[i];
+    var accepted = (marginOverride[p] != null && marginOverride[p] >= 40 && retail >= price / 0.6);
+    var zone = (accepted || retail >= fl + ZONE_GREEN_PAD) ? 'g'
+      : (retail >= fl - ZONE_AMBER_DROP ? 'y' : 'a');
+    if (zone === 'g') fits++;
+    else { allGreen = false; if (zone === 'a') amberN++; else yellowN++; if (mRaw < margin) belowOwnTarget = true; }
+    dot.className = 'dot ' + zone;
+    st.className = 'pstatus ' + zone;
+    st.textContent = zone === 'g' ? 'Fits' : (zone === 'y' ? 'Near range' : 'Adjust');
     shelf.className = 'shelf show';
-    var inc = retail * (1 + VAT);
+    var inc = retailRaw * (1 + VAT);
     $('sv-'+p).textContent = 'AED ' + fmt(inc);
     var effMargin = (marginOverride[p] != null) ? marginOverride[p] : margin;
     if (effMargin > 0) {
-      var unit = retail * effMargin / 100;
+      var unit = retailRaw * effMargin / 100;
       var tag = (marginOverride[p] != null)
-        ? 'At your accepted ' + effMargin + '% on this item'
+        ? 'At your stated ' + effMargin + '% on this item'
         : 'At your stated ' + effMargin + '% gross margin';
-      $('yl-'+p).innerHTML = tag + ': <b>≈ '
+      var line = tag + ': <b>≈ '
         + fmt(unit) + ' AED / unit</b> · <b>' + Math.round(unit*v).toLocaleString()
         + ' AED / month</b> <span style="color:var(--ink-dim)">(your numbers only)</span>';
+      // second line: when their price earns MORE than their stated target, say so.
+      // Banded to a 5% range — an exact figure would let our cost be back-solved
+      // as retail × (1 − margin). Live page runs placeholder numbers anyway;
+      // revisit band size when the real ladder ships server-side.
+      if (marginOverride[p] == null && margin > 0 && mRaw > margin) {
+        var lo = Math.floor(mRaw / 5) * 5;   // NO cap on lo — a 95%+ margin used
+          // to mis-render as "90–95%" (the min(90,...) clamped both ends)
+        line += '<div style="margin-top:5px; color:var(--ink-dim)">At your price, your <em>actual</em> gross margin '
+          + (lo >= 95 ? 'is <b>95%+</b>'
+                      : 'sits in the ' + lo + '–' + (lo + 5) + '% range')
+          + ' — above your stated target.</div>';
+      }
+      $('yl-'+p).innerHTML = line;
     } else {
       $('yl-'+p).textContent = '';
     }
-    // per-product fixer
+    // per-product zone box
     var fix = $('fix-'+p);
-    if (!green) {
-      var h = '<div class="f-title">Just outside the framework — easily fixed.</div>';
+    if (zone === 'a') {
+      var h = '<div class="f-title">Below our recommended positioning — easily fixed.</div>';
       var rec = recRetail(p, v);
       h += '<div class="f-opt"><button type="button" data-act="price" data-p="'+p+'">Use our suggested price — AED '+fmt(rec)+'</button>'
         + '<div class="f-note">Consumer pays AED '+fmt(rec*(1+VAT))+' incl. VAT. One tap — this product turns green.</div></div>';
-      if (mActual >= 40) {
-        h += '<div class="f-opt"><button type="button" data-act="margin" data-p="'+p+'">Keep AED '+fmt(retail)+' — accept '+mActual+'% on this item</button>'
-          + '<div class="f-note">You still earn ≈ '+fmt(retail-price)+' AED per unit. Lean margins from the right venue are fine by us — this item counts as green.</div></div>';
+      // accept-path visibility is itself a price oracle. Key it to a 5% ROUNDED
+      // margin bucket required to be >= 45: the visible edge sits at ~42.5%,
+      // NOT on the internal 40% rule, and the printed bucket always matches
+      // the requirement (a floor-bucket could literally print "accept ≈40%").
+      if (Math.round(mRaw / 5) * 5 >= 45) {
+        var mBand = Math.round(mRaw / 5) * 5;
+        h += '<div class="f-opt"><button type="button" data-act="margin" data-p="'+p+'">Keep AED '+fmt(retailRaw)+' — proceed at ≈'+mBand+'% margin</button>'
+          // per-unit earning is BANDED to the nearest 2 AED — an exact figure
+          // would hand over the wholesale price as retailRaw − unit (= our cost)
+          + '<div class="f-note">You still earn ≈ '+(Math.round((retailRaw-price)/2)*2)+' AED per unit. Lean margins from the right venue are fine by us — this item counts as green.</div></div>';
       }
       fix.innerHTML = h;
       fix.className = 'fixer show';
+    } else if (zone === 'y') {
+      fix.innerHTML = '<div class="f-title">Close to our recommended range.</div>'
+        + '<div class="f-note">Your price sits near the lower end of where we position this product. We confirm the exact commercial fit in your indicative offer — nothing here is a rejection.</div>';
+      fix.className = 'fixer show review';
     } else if (aboveCap) {
       fix.innerHTML = '<div class="f-note">Above the typical UAE shelf price for this product — and that is your call, not ours. If your guests pay it, everyone wins. This is a note, not a flag.</div>';
       fix.className = 'fixer show note';
@@ -422,7 +502,7 @@ function evaluate(){
   // red-alert the buyer's own target margin when an amber item undercuts it
   var mf = $('marginFlag');
   if (belowOwnTarget && margin > 0) {
-    mf.textContent = 'At your price on the amber-flagged item, your actual margin falls below your own stated ' + margin + '% target — see the card below.';
+    mf.textContent = 'At your price on the flagged item, your actual margin falls below your own stated ' + margin + '% target — see the card below.';
     mf.className = 'moq show';
     $('margin').classList.add('flag-red');
   } else {
@@ -431,24 +511,37 @@ function evaluate(){
   }
   var verdict = $('verdict');
   if (!anyEval) { verdict.className = 'verdict'; return; }
-  verdict.className = 'verdict show ' + (allGreen ? 'green' : 'amber');
+  var misses = evald - fits;
   if (allGreen) {
+    verdict.className = 'verdict show green';
     if (evald === 1) $('vtext').textContent = 'This product works at your volume.';
     else $('vtext').textContent = 'All ' + evald + ' products work at your volumes.';
-    $('vsub').textContent = 'Your pricing sits within the APOCOCO framework across your selection. Leave your work email and we will send your indicative offer — your numbers are already attached.';
+    $('vsub').textContent = 'Your pricing sits comfortably within the APOCOCO recommended range across your selection. Leave your work email and we will send your indicative offer — your numbers are already attached.';
+    $('emailLbl').textContent = 'Where should we send your indicative offer?';
+    $('ctaBtn').textContent = 'Request indicative offer';
+  } else if (amberN === 0) {
+    // review state: everything green or yellow — offer still on the table
+    verdict.className = 'verdict show review';
+    if (evald === 1) {
+      $('vtext').textContent = 'This product sits close to our recommended range.';
+      $('vsub').textContent = 'Your price is near the lower end of where we position this product. We confirm the exact commercial fit in your indicative offer — your numbers are already attached.';
+    } else {
+      $('vtext').textContent = fits + ' of ' + evald + ' products fit comfortably — the rest sit close to our range.';
+      $('vsub').textContent = 'Your basket is nearly there. For the remaining ' + misses + ', we confirm the exact fit in your indicative offer — nothing here is a rejection.';
+    }
     $('emailLbl').textContent = 'Where should we send your indicative offer?';
     $('ctaBtn').textContent = 'Request indicative offer';
   } else {
-    var misses = evald - fits;
+    verdict.className = 'verdict show amber';
     if (evald === 1) {
       $('vtext').textContent = 'This product is one tap from fitting.';
-      $('vsub').textContent = 'Nothing here is a rejection — this page is a starting point, not a verdict. There is a one-tap fix under the card: take the suggested price, or keep your price and accept the margin shown. Or send us the basket as it is and our trade desk will shape it with you personally.';
+      $('vsub').textContent = 'Nothing here is a rejection — this page is a starting point, not a verdict. There is a one-tap fix under the card: take the suggested price, or keep your price and proceed at the margin shown. Or send us the basket as it is and our trade desk will shape it with you personally.';
     } else if (misses === 1) {
       $('vtext').textContent = fits + ' of ' + evald + ' products fit — the last one is one tap from fitting.';
       $('vsub').textContent = 'Most venues fit on most products — that is the design. For the remaining one, tap the suggestion under it and it turns green, or send us the basket as it is and our trade desk will shape it with you personally. Nothing on this page is a rejection.';
     } else {
       $('vtext').textContent = fits + ' of ' + evald + ' products fit — each one is one tap from fitting.';
-      $('vsub').textContent = 'This page is a starting point, not a verdict. Every miss has a one-tap fix under it — take the suggested price, or keep your price and accept the margin shown. Or send us the basket as it is and our trade desk will shape it with you personally. Nothing here is a rejection.';
+      $('vsub').textContent = 'This page is a starting point, not a verdict. Every miss has a one-tap fix under it — take the suggested price, or keep your price and proceed at the margin shown. Or send us the basket as it is and our trade desk will shape it with you personally. Nothing here is a rejection.';
     }
     $('emailLbl').textContent = 'Prefer a human? Send this basket to our trade desk:';
     $('ctaBtn').textContent = 'Send my basket to the trade desk';
@@ -456,6 +549,9 @@ function evaluate(){
   $('emailbox').className = 'emailbox show';
   $('cta').className = 'cta show';
 }
+// set the correct preset on first load (default venue = fitness) instead of
+// leaving the hardcoded HTML default (50%) showing until the first chip click
+applyMarginPreset();
 </script>
 </body>
 </html>
